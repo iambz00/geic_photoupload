@@ -182,6 +182,7 @@ if ($handle = opendir('frame')) {
 <script type="text/javascript">
 var PIC_OBJ
 var PRESET
+var BG_URL = 'pictures/background.png'
 
 // Canvas size preset
 var _PRESET = {
@@ -226,6 +227,13 @@ $(document).ready(function() {
 	// Set first frame
 	$('.thumbnail').first().css('border-color', 'blue')
 	canvas.setOverlayImage($('.thumbnail').first().attr('src'), canvas.renderAll.bind(canvas))
+	// Set background
+	fabric.Image.fromURL(BG_URL, function(oImg) {
+		oImg.scaleToWidth(PRESET["PIC_WIDTH"])
+		oImg.selectable = false
+		canvas.add(oImg)
+		oImg.sendToBack()
+	})
 
 	$('#btn_submit').button('disable')
 })
@@ -250,8 +258,6 @@ $('#pick_picture').change(function(e) {
 			var oImg = new fabric.Image(imageObj)
 			if (PIC_OBJ) canvas.remove(PIC_OBJ)
 			oImg.scaleToWidth(PRESET["PIC_WIDTH"])
-				.setLeft(PRESET["PIC_PADDING_LEFT"])
-				.setTop(PRESET["PIC_PADDING_TOP"])
 			oImg.set({
 				left: canvas.width / 2 / PRESET["SCALE"],
 				top: canvas.height / 2 / PRESET["SCALE"],
@@ -259,6 +265,7 @@ $('#pick_picture').change(function(e) {
 				originY:"center"
 			})
 			canvas.add(oImg)
+			oImg.bringToFront()
 			PIC_OBJ = oImg
 		}
 	}
