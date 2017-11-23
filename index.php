@@ -44,29 +44,59 @@ session_start();
 <div data-role="page" data-theme="a" data-content-theme="a" data-position="fixed">
 	<div data-role="header">
 		<a class="ui-btn ui-icon-home ui-btn-icon-notext ui-corner-all"></a>
-		<h1>사진 인화 서비스</h1>
+		<h1>사진 출력 서비스</h1>
 	</div>
-	<div role="main" class="ui-content">
-		<div>
-			안 내 내 용
-		</div>
+	<div role="main" class="ui-content aligncenter">
+
+		<ul data-role="listview" data-inset="true">
+			<li data-role="list-divider">안내</li>
+			<li>
+				<div class="ui-grid-a">
+					<div class="ui-block-a">
+						<p>
+						안내 내용 1<br>
+						안내 내용 2<br>
+						안내 내용 3<br>
+						안내 내용 4<br>
+						</p>
+					</div>
+				</div>
+			</li>
 <?php
 $status = $_SESSION['STATUS'];
-switch($status) {
-	case "FIN":
+if($status == "FIN") {
+		$filename = $_SESSION['FILENAME'];
+		$filetime = substr($filename,9,2) . ":" . substr($filename,11,2) . ":" . substr($filename,13,2);
+		$filetitle = substr($filename,16);
+?>
+			<li data-role="list-divider">업로드한 사진</li>
+			<li>
+				<div class="ui-grid-a aligncenter">
+					<img src="get.php?type=t&name=<?=$filename?>"></img>
+				</div>
+				<div class="ui-grid-a">
+					<div class="ui-block-a">
+						<p class="alignright"><strong>사진 제목</strong></p>
+					</div>
+					<div class="ui-block-b">
+						<p class="alignleft"><?=$filetitle?></p>
+					</div>
+				</div>
 
-?>
-		FIN
-		<img src="get.php?type=t&name=<?=$_SESSION['FILENAME']?>"></img>
-<?php
-		break;
-	case "RAW":
-?>
-		RAW
-		<img src="get.php?type=r&name=<?=$_SESSION['FILENAME']?>" style="width:140px;"></img>
+				<div class="ui-grid-a">
+					<div class="ui-block-a">
+						<p class="alignright"><strong>업로드 시간</strong></p>
+					</div>
+					<div class="ui-block-b">
+						<p class="alignleft"><?=$filetime?></p>
+					</div>
+				</div>
+			</li>
 <?php
 }
 ?>
+		</ul>
+
 		<div>
 			<a data-ajax="false" href="edit.php" class="ui-btn">사진 편집하러 가기</a>
 		</div>

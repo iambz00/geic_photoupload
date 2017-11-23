@@ -134,34 +134,34 @@ if ($handle = opendir('frame')) {
 			<li data-role="list-divider">개인정보의 수집&middot;이용 동의</li>
 			<li>
 				<div class="ui-grid-a">
-					<div class="ui-block-6">
-						<p class="alignleft"><strong>개인정보의 수집&middot;이용 목적</strong></p>
+					<div class="ui-block-a">
+						<p class="alignleft"><strong>수집&middot;이용 목적</strong></p>
 					</div>
-					<div class="ui-block-4">
-						<p class="alignright">사진 인화</p>
-					</div>
-				</div>
-
-				<div class="ui-grid-a">
-					<div class="ui-block-6">
-						<p class="alignleft"><strong>수집하는 개인정보의 항목</strong></p>
-					</div>
-					<div class="ui-block-4">
-						<p class="alignright">사진</p>
+					<div class="ui-block-b">
+						<p class="alignleft">사진 인화</p>
 					</div>
 				</div>
 
 				<div class="ui-grid-a">
-					<div class="ui-block-6">
-						<p class="alignleft"><strong>개인정보의 보유 및 이용 기간</strong></p>
+					<div class="ui-block-a">
+						<p class="alignleft"><strong>수집 항목</strong></p>
 					</div>
-					<div class="ui-block-4">
-						<p class="alignright">1일</p>
+					<div class="ui-block-b">
+						<p class="alignleft">사진</p>
+					</div>
+				</div>
+
+				<div class="ui-grid-a">
+					<div class="ui-block-a">
+						<p class="alignleft"><strong>보유 기간</strong></p>
+					</div>
+					<div class="ui-block-b">
+						<p class="alignleft">1일</p>
 					</div>
 				</div>
 				<p class="aligncenter" style="white-space:normal">
 					<strong>동의를 거부</strong>하실 수 있으며, 미동의 시
-					사진 <strong>편집 및 출력이 불가능</strong>합니다.</p>
+					사진 <strong>출력은 불가능</strong>합니다.</p>
 				<div class="aligncenter">
 				<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
 					<legend class="ui-hidden-accessible">개인정보 수집&middot;이용 동의</legend>
@@ -358,7 +358,7 @@ function toBlobAndSave() {
 			},
 			error: onSaveError
 		})
-	}, "image/jpeg", 0.8)
+	}, "image/jpeg", 0.9)
 }
 
 function onSaveSuccess(blobObj) {
