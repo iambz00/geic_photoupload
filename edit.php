@@ -54,7 +54,8 @@ body {
 <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.4.5/jquery.mobile.theme-1.4.5.css">
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
 <script src="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-<script src="lib/fabric.js"></script>
+<script src="lib/exif.js"></script>
+<script src="lib/fabric.min.js"></script>
 <script src="lib/Blob.js"></script>
 <!-- Blob.js implements the W3C Blob interface in browsers that do not natively support it.
 	 https://github.com/eligrey/Blob.js -->
@@ -92,6 +93,7 @@ body {
 
 	<div role="main" class="ui-content">
 		<div>
+			<pre id="res"></pre>
 			<img id="result"></img>
 			
 			<div id="wrap">
@@ -121,13 +123,10 @@ if ($handle = opendir('frame')) {
 			편집 완료
 		</div>
 		<ul data-role="listview" data-inset="true">
-			<li data-role="list-divider">사진 정보 입력</li>
+			<li data-role="list-divider">사진 제목 입력</li>
 			<li>
 				<div class="ui-grid-a">
-					<div class="ui-block-6">
-						<label for="frm_title"><p><strong>사진 제목</strong></p></label>
-					</div>
-					<div class="ui-block-4">
+					<div class="ui-block">
 						<input type="text" name="title" id="frm_title" value="" placeholder="사진 제목"/>
 					</div>
 				</div>
@@ -252,6 +251,7 @@ $('#pick_picture').change(function(e) {
 	if (!file.type.match(imageType)) return
 	var reader = new FileReader()
 	reader.onload = function(event) {
+		var exif = EXIF.readFromBinaryFile(base64ToArrayBuffer(this.result))
 		var imageObj = new Image()
 		imageObj.src = event.target.result
 		imageObj.onload = function() {
@@ -264,6 +264,16 @@ $('#pick_picture').change(function(e) {
 				originX:"center",
 				originY:"center"
 			})
+			switch(exif.Orientation) {
+				case 8:
+					oImg.setAngle(270)
+					break
+				case 6:
+					oImg.setAngle(90)
+					break
+				case 3:
+					oImg.setAngle(180)
+			}
 			canvas.add(oImg)
 			oImg.bringToFront()
 			PIC_OBJ = oImg
@@ -277,7 +287,21 @@ $('#pick_picture').change(function(e) {
 
 $('input[name=title]').change(checkSubmit)
 $('input[name=title]').keyup(checkSubmit)
-$('input[name=privacy_yn]').change(checkSubmit)
+$('input[name=privacy_yn]').change(function() {
+	$('input[name=privacy_yn]').focus()
+	checkSubmit()
+})
+
+function base64ToArrayBuffer (base64) {
+	base64 = base64.replace(/^data\:([^\;]+)\;base64,/gmi, '');
+	var binaryString = atob(base64);
+	var len = binaryString.length;
+	var bytes = new Uint8Array(len);
+	for (var i = 0; i < len; i++) {
+		bytes[i] = binaryString.charCodeAt(i);
+	}
+	return bytes.buffer;
+}
 
 function checkSubmit() {
 	if ($('input[name=privacy_yn]:checked').val() == "Y" && $('input[name=title]').val() != "") {
@@ -290,6 +314,7 @@ function checkSubmit() {
 
 $('#btn_submit').click(function() {
 	var picture_name = getDateTime() + "_" + $('input[name=title]').val() + ".jpg"
+
 	// Restore canvas size
 	canvas
 	.deactivateAll()
@@ -323,20 +348,19 @@ $('#btn_submit').click(function() {
 			cache: false,
 			processData: false,
 			contentType: false,
-			beforeSend: function() {
-				console.log("@beforeSend")
-			},
+			beforeSend: null,
 			success: function(response, status, jqXHR) {
+				var urlCreator = window.URL || window.webkitURL
 				$('#result')
 					.width(PRESET["SCALE"] * PRESET["FRAME_WIDTH"])
 					.height(PRESET["SCALE"] * PRESET["FRAME_HEIGHT"])
-					.prop('src', "get.php?type=f&name="+response)
+					.prop('src', urlCreator.createObjectURL(blob))
 			},
 			error: function(jqXHR, status, errorThrown) {
 				alert("Error\n"+status+errorThrown)
 			}
 		})
-	}, "image/jpeg", 0.9)
+	}, "image/jpeg", 0.8)
 })
 
 $('#btn_pick').click(function () {

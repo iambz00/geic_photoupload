@@ -1,6 +1,5 @@
 <?php
 //if ($_SERVER['REQUEST METHOD'] === 'POST') die("BAD REQEUST");
-
 session_start();
 
 function stripstr($str) {
@@ -10,7 +9,10 @@ function stripstr($str) {
 
 $uploaddir = 'pictures/framed/';
 $filename = stripstr($_FILES['framedpicture']['name']);
+$tmpname = $_FILES['framedpicture']['tmp_name'];
 $uploadfile = $uploaddir.$filename;
+
+echo "name: $filename\ntmp_name: $tmpname\n";
 
 if (move_uploaded_file($_FILES['framedpicture']['tmp_name'], $uploadfile)) {
     echo "$filename";
