@@ -380,12 +380,18 @@ $('#btn_pick').click(function () {
 })
 
 $('#btn_zoomin').click(function() {
-	PIC_OBJ.scale(PIC_OBJ.getScaleX() * 1.05)
-	canvas.renderAll()
+	if(PIC_OBJ) {
+		PIC_OBJ.scale(PIC_OBJ.getScaleX() * 1.05)
+		canvas.renderAll()
+	}
+	window.setTimeout(function() { $('#btn_zoomin').removeClass($.mobile.activeBtnClass) }, 150)
 })
 $('#btn_zoomout').click(function() {
-	PIC_OBJ.scale(PIC_OBJ.getScaleX() / 1.05)
-	canvas.renderAll()
+	if(PIC_OBJ) {
+		PIC_OBJ.scale(PIC_OBJ.getScaleX() / 1.05)
+		canvas.renderAll()
+	}
+	window.setTimeout(function() { $('#btn_zoomout').removeClass($.mobile.activeBtnClass) }, 150)
 })
 
 function setScale() {
