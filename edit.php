@@ -92,7 +92,7 @@ body {
 	</div>
 
 	<div role="main" class="ui-content">
-		<div>
+		<div class="aligncenter">
 			<pre id="res"></pre>
 			<img id="result"></img>
 			
@@ -313,9 +313,19 @@ function checkSubmit() {
 }
 
 $('#btn_submit').click(function() {
-	var picture_name = getDateTime() + "_" + $('input[name=title]').val() + ".jpg"
+	// $('canvas').hide() // After .hide() <canvas> still takes space
+	$('#wrap').hide()
+	$('#result').show()
+	$('#navbarBtn').hide()
+	$('#panel_pick').hide()
+	$('#panel_upload').show()
+	window.setTimeout(toBlobAndSave, 500)
+})
 
+function toBlobAndSave() {
+	var picture_name = getDateTime() + "_" + $('input[name=title]').val() + ".jpg"
 	// Restore canvas size
+	// Take some saconds in mobile
 	canvas
 	.deactivateAll()
 	.setZoom(1)
@@ -323,12 +333,6 @@ $('#btn_submit').click(function() {
 	.setHeight(PRESET["FRAME_HEIGHT"])
 	.renderAll()
 
-	// $('canvas').hide() // After .hide() <canvas> still takes space
-	$('#wrap').hide()
-	$('#result').show()
-	$('#navbarBtn').hide()
-	$('#panel_pick').hide()
-	$('#panel_upload').show()
 	$('canvas')[0].toBlob(function(blob) {
 		var fd = new FormData()
 		fd.append("framedpicture", blob, picture_name)
@@ -350,18 +354,26 @@ $('#btn_submit').click(function() {
 			contentType: false,
 			beforeSend: null,
 			success: function(response, status, jqXHR) {
-				var urlCreator = window.URL || window.webkitURL
-				$('#result')
-					.width(PRESET["SCALE"] * PRESET["FRAME_WIDTH"])
-					.height(PRESET["SCALE"] * PRESET["FRAME_HEIGHT"])
-					.prop('src', urlCreator.createObjectURL(blob))
+				onSaveSuccess(blob)
 			},
-			error: function(jqXHR, status, errorThrown) {
-				alert("Error\n"+status+errorThrown)
-			}
+			error: onSaveError
 		})
 	}, "image/jpeg", 0.8)
-})
+}
+
+function onSaveSuccess(blobObj) {
+	var urlCreator = window.URL || window.webkitURL
+	$('#result')
+		.width(PRESET["SCALE"] * PRESET["FRAME_WIDTH"])
+		.height(PRESET["SCALE"] * PRESET["FRAME_HEIGHT"])
+		.prop('src', urlCreator.createObjectURL(blobObj))
+	$('#panel_upload').hide()
+	alert("안 내 문 구")
+}
+
+function onSaveError(jqXHR, status, errorThrown) {
+	alert("오 류 안 내")
+}
 
 $('#btn_pick').click(function () {
 	$('#panel_pick').toggle()
@@ -391,13 +403,13 @@ function getDateTime() {
 	result = now.getFullYear() + fillZero(now.getMonth()+1) + fillZero(now.getDate()) + '_'
 	result += fillZero(now.getHours()) + fillZero(now.getMinutes()) + fillZero(now.getSeconds())
 	return result
+	function fillZero(str) {
+		str = '0' + str
+		if (str.length > 2) str = str.slice(str.length - 2)
+		return str
+	}
 }
 
-function fillZero(str) {
-	str = '0' + str
-	if (str.length > 2) str = str.slice(str.length - 2)
-	return str
-}
 </script>
 </body>
 </html>
