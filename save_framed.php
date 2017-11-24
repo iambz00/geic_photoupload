@@ -24,7 +24,7 @@ $thumbdir = 'pictures/thumbnail/';
 
 $imagick = new \Imagick(realpath($uploadfile));
 $imagick->setbackgroundcolor('rgb(255, 255, 255)');
-$imagick->thumbnailImage(140, 210, true, true);
+$imagick->thumbnailImage(120, 180, true, true);
 $imagick->writeImage($thumbdir.$filename);
 
 $_SESSION['STATUS'] = 'FIN';
