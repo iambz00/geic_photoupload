@@ -334,7 +334,7 @@ function toBlobAndSave() {
 		var fd = new FormData()
 		fd.append("framedpicture", blob, picture_name)
 		$.ajax({
-			url: "save_framed.php",
+			url: "save.php",
 			type: "POST",
 			xhr: function() {	// Custom XMLHttpRequest
 				var myXhr = $.ajaxSettings.xhr();
