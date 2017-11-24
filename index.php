@@ -71,24 +71,17 @@ if($status == "FIN") {
 ?>
 			<li data-role="list-divider">업로드한 사진</li>
 			<li>
-				<div class="ui-grid-a aligncenter">
-					<img src="get.php?type=t&name=<?=$filename?>"></img>
-				</div>
 				<div class="ui-grid-a">
-					<div class="ui-block-a">
-						<p class="alignright"><strong>사진 제목</strong></p>
+					<div class="ui-block-a alignright">
+						<img src="get.php?type=t&name=<?=$filename?>" style="width:120px;height:180px"></img>
 					</div>
 					<div class="ui-block-b">
-						<p class="alignleft"><?=$filetitle?></p>
-					</div>
-				</div>
-
-				<div class="ui-grid-a">
-					<div class="ui-block-a">
-						<p class="alignright"><strong>업로드 시간</strong></p>
-					</div>
-					<div class="ui-block-b">
-						<p class="alignleft"><?=$filetime?></p>
+						<p class="alignleft">
+							<strong>사진 제목</strong><br><?=$filetitle?>
+						</p>
+						<p class="alignleft">
+							<strong>업로드 시간</strong><br><?=$filetime?>
+						</p>
 					</div>
 				</div>
 			</li>
