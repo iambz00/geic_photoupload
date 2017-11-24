@@ -19,7 +19,7 @@ body {
 #panel_finish {
 	background-color:rgba(0, 0, 0, 0.7)
 }
-/* 2 panels behind is not real panels */
+/* 2 panels behind are not real panels */
 #panel_pick {}
 #panel_upload {}
 
@@ -57,11 +57,7 @@ body {
 <script src="lib/exif.js"></script>
 <script src="lib/fabric.min.js"></script>
 <script src="lib/Blob.js"></script>
-<!-- Blob.js implements the W3C Blob interface in browsers that do not natively support it.
-	 https://github.com/eligrey/Blob.js -->
 <script src="lib/canvas-toBlob.js"></script>
-<!-- canvas-toBlob.js implements the standard HTML5 canvas.toBlob() and canvas.toBlobHD() methods in browsers that do not natively support it.
-	 https://github.com/eligrey/canvas-toBlob.js -->
 </head>
 
 <body>
@@ -182,26 +178,27 @@ if ($handle = opendir('frame')) {
 var PIC_OBJ
 var PRESET
 var BG_URL = 'pictures/background.png'
+var DEVICE_PIXEL_RATIO = window.devicePixelRatio
 
 // Canvas size preset
 var _PRESET = {
 	HORIZONTAL : {
-	FRAME_WIDTH : 1800,
-	FRAME_HEIGHT : 1200,
-	PIC_WIDTH : 1800 * 0.8,
-	PIC_HEIGHT : 1200 * 0.8,
-	PIC_PADDING_LEFT : 60,
-	PIC_PADDING_TOP : 120,
-	SCALE : 1,
-	},
+		FRAME_WIDTH : 1800,
+		FRAME_HEIGHT : 1200,
+		PIC_WIDTH : 1800 * 0.8,
+		PIC_HEIGHT : 1200 * 0.8,
+		PIC_PADDING_LEFT : 60,
+		PIC_PADDING_TOP : 120,
+		SCALE : 1,
+		},
 	VERTICAL : {
-	FRAME_WIDTH : 1200,
-	FRAME_HEIGHT : 1800,
-	PIC_WIDTH : 1200,
-	PIC_HEIGHT : 1800,
-	PIC_PADDING_LEFT : 0,
-	PIC_PADDING_TOP : 500,
-	SCALE : 1,
+		FRAME_WIDTH : 1200,
+		FRAME_HEIGHT : 1800,
+		PIC_WIDTH : 1200,
+		PIC_HEIGHT : 1800,
+		PIC_PADDING_LEFT : 0,
+		PIC_PADDING_TOP : 500,
+		SCALE : 1,
 	}
 }
 
@@ -328,9 +325,9 @@ function toBlobAndSave() {
 	// Take some saconds in mobile
 	canvas
 	.deactivateAll()
-	.setZoom(1)
-	.setWidth(PRESET["FRAME_WIDTH"])
-	.setHeight(PRESET["FRAME_HEIGHT"])
+	.setZoom(1 / DEVICE_PIXEL_RATIO)
+	.setWidth(PRESET["FRAME_WIDTH"] / DEVICE_PIXEL_RATIO)
+	.setHeight(PRESET["FRAME_HEIGHT"] / DEVICE_PIXEL_RATIO)
 	.renderAll()
 
 	$('canvas')[0].toBlob(function(blob) {
