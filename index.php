@@ -6,8 +6,6 @@
 <title>사진 인화 서비스</title>
 
 <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.4.5/jquery.mobile-1.4.5.min.css">
-<!--<link rel="stylesheet" href="lib/jqm-theme/flatui/jquery.mobile.flatui.css">-->
-<!--<link rel="stylesheet" href="lib/jqm-theme/nativeDroid/css/nativedroid2.css">-->
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
 <script src="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 <style type="text/css">
@@ -22,22 +20,7 @@
 .aligncenter {
 	text-align:center;
 }
-progress {
-	 width:96%; height:30px; margin-top:15px; vertical-align:middle;
-}
-.ui-block-6 {
-	width:60%;
-	clear:left;
-	float:left;
-}
-.ui-block-4 {
-	width:40%;
-	float:left;
-}
 </style>
-<?php
-session_start();
-?>
 </head>
 
 <body>
@@ -63,13 +46,19 @@ session_start();
 				</div>
 			</li>
 <?php
-$status = $_SESSION['STATUS'];
-if($status == "FIN") {
+session_start();
+
+if(isset($_SESSION['EXPIRE'])) {
+	if($_SESSION['EXPIRE'] < time()) {
+		session_unset();
+		session_destroy();
+	}
+	elseif(isset($_SESSION['FILENAME'])) {
 		$filename = $_SESSION['FILENAME'];
 		$filetime = substr($filename,9,2) . ":" . substr($filename,11,2) . ":" . substr($filename,13,2);
 		$filetitle = substr($filename,16);
 ?>
-			<li data-role="list-divider">업로드한 사진</li>
+			<li data-role="list-divider">업로드한 사진 정보</li>
 			<li>
 				<div class="ui-grid-a">
 					<div class="ui-block-a alignright">
@@ -86,12 +75,13 @@ if($status == "FIN") {
 				</div>
 			</li>
 <?php
+	}
 }
 ?>
 		</ul>
 
 		<div>
-			<a data-ajax="false" href="edit.php" class="ui-btn">사진 편집하러 가기</a>
+			<a data-ajax="false" href="edit.php" class="ui-btn">사진 보내러 가기</a>
 		</div>
 	</div>
 	<div data-role="footer" data-position="fixed">
@@ -104,13 +94,5 @@ if($status == "FIN") {
 		<input type="text" name="rotation" readOnly />
 	</form>
 </div>
-
-<script type="text/javascript">
-var $ = $
-$(document).ready(function() {
-	//$('#btn_submit').button('disable')
-})
-</script>
 </body>
-
 </html>

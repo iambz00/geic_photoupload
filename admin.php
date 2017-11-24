@@ -10,12 +10,17 @@ li {
     list-style-type:none;
     margin:3px;
     padding:3px;
-    background-color:#ccc;
+	padding-bottom:10px;
+    background-color:#ddd;
     text-align:center;
 }
 img {
-    border:2px solid black;
     margin:5px;
+}
+a	{
+	color:#000;
+	font-size:10pt;
+	text-decoration:none;
 }
 </style>
 </head>
