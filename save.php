@@ -29,5 +29,6 @@ $imagick->writeImage($thumbdir.$filename);
 
 $_SESSION['STATUS'] = 'FIN';
 $_SESSION['FILENAME'] = $filename;
+$_SESSION['EXPIRE'] = time() + 7200;
 
 ?>

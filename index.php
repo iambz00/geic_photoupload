@@ -48,8 +48,12 @@
 <?php
 session_start();
 
-$status = $_SESSION['STATUS'];
-if($status == "FIN") {
+if(isset($_SESSION['EXPIRE'])) {
+	if($_SESSION['EXPIRE'] < time()) {
+		session_unset();
+		session_destroy();
+	}
+	elseif(isset($_SESSION['FILENAME'])) {
 		$filename = $_SESSION['FILENAME'];
 		$filetime = substr($filename,9,2) . ":" . substr($filename,11,2) . ":" . substr($filename,13,2);
 		$filetitle = substr($filename,16);
@@ -71,6 +75,7 @@ if($status == "FIN") {
 				</div>
 			</li>
 <?php
+	}
 }
 ?>
 		</ul>
