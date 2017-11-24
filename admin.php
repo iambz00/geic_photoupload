@@ -26,16 +26,17 @@ img {
 
 </html><ul>
 <?php
+
 if ($handle = opendir('./pictures/thumbnail')) {
     while (false !== ($entry = readdir($handle))) {
-        if ($entry != "." && $entry != "..") {
-            preg_match("/(\d{14})_([^_]*)_.*/", $entry, $matches);
-            $date = date_create_from_format('YmdHis', $matches[1]);
+        if (substr($entry,-4) == ".jpg") { // .jpg only
+            preg_match("/([\d_]{15})_(.*)\.jpg/", $entry, $matches);
+            $date = date_create_from_format('Ymd_His', $matches[1]);
     ?>
     <li>
         <a href="get.php?type=f&name=<?=$entry?>">
             <img src="get.php?type=t&name=<?=$entry?>" alt=""><br>
-            <?=$date->format('Y-m-d H:i:s');?><br>
+            <?=$date->format('m-d H:i:s');?><br>
             <?=$matches[2]?>
         </a>
     </li>
