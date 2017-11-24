@@ -19,17 +19,14 @@ body {
 #panel_finish {
 	background-color:rgba(0, 0, 0, 0.7)
 }
-/* 2 panels behind are not real panels */
 #panel_pick {}
 #panel_upload {}
 
 .thumbnail {
 	margin:10px;
 	width:90px;
-	height:130px;
-	border-width:2px;
-	border-style:solid;
-	border-color: #ccc;
+	height:135px;
+	border:2px solid #ccc;
 	vertical-align:middle;
 }
 .canvas-container {
@@ -112,7 +109,6 @@ if ($handle = opendir('frame')) {
 	}
 }
 ?>
-		<img class="thumbnail" data-rel="close"/>
 	</div>
 	<div data-role="panel" data-display="overlay" id="panel_finish" data-position="right">
 		<div class="ui-bar ui-bar-a">
@@ -171,6 +167,30 @@ if ($handle = opendir('frame')) {
 		</ul>
 		<input type="button" id="btn_submit" data-icon="edit" value="사진 전송" data-rel="close"/>
 
+	</div>
+	<div data-role="popup" id="popup_finish" data-dismissible="false">	
+		<div data-role="header" >
+		<h1>전송 완료!</h1>
+		</div>
+		<div role="main" class="ui-content">
+			<p>안내 문구 안내 문구 안내 문구 안내 문구 안내 문구 안내 문구 </p>
+			<div class="aligncenter">
+				<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">
+				확 &nbsp; 인</a>
+			</div>
+		</div>
+	</div>
+	<div data-role="popup" id="popup_error" data-dismissible="false">	
+		<div data-role="header" >
+		<h1>오류 발생!</h1>
+		</div>
+		<div role="main" class="ui-content">
+			<p>오류 안내 오류 안내 오류 안내 오류 안내 오류 안내 오류 안내 </p>
+			<div class="aligncenter">
+				<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">
+				확 &nbsp; 인</a>
+			</div>
+		</div>
 	</div>
 </div>
 
@@ -322,7 +342,6 @@ $('#btn_submit').click(function() {
 function toBlobAndSave() {
 	var picture_name = getDateTime() + "_" + $('input[name=title]').val() + ".jpg"
 	// Restore canvas size
-	// Take some saconds in mobile
 	canvas
 	.deactivateAll()
 	.setZoom(1 / DEVICE_PIXEL_RATIO)
@@ -365,11 +384,11 @@ function onSaveSuccess(blobObj) {
 		.height(PRESET["SCALE"] * PRESET["FRAME_HEIGHT"])
 		.prop('src', urlCreator.createObjectURL(blobObj))
 	$('#panel_upload').hide()
-	alert("안 내 문 구")
+	$('#popup_finish').popup('open')
 }
 
 function onSaveError(jqXHR, status, errorThrown) {
-	alert("오 류 안 내")
+	$('#popup_error').popup('open')
 }
 
 $('#btn_pick').click(function () {
