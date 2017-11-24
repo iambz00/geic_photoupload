@@ -58,7 +58,7 @@ if(isset($_SESSION['EXPIRE'])) {
 		$filetime = substr($filename,9,2) . ":" . substr($filename,11,2) . ":" . substr($filename,13,2);
 		$filetitle = substr($filename,16);
 ?>
-			<li data-role="list-divider">업로드한 사진</li>
+			<li data-role="list-divider">업로드한 사진 정보</li>
 			<li>
 				<div class="ui-grid-a">
 					<div class="ui-block-a alignright">
@@ -81,7 +81,7 @@ if(isset($_SESSION['EXPIRE'])) {
 		</ul>
 
 		<div>
-			<a data-ajax="false" href="edit.php" class="ui-btn">사진 편집하러 가기</a>
+			<a data-ajax="false" href="edit.php" class="ui-btn">사진 보내러 가기</a>
 		</div>
 	</div>
 	<div data-role="footer" data-position="fixed">
