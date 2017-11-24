@@ -19,7 +19,7 @@ body {
 #panel_finish {
 	background-color:rgba(0, 0, 0, 0.7)
 }
-/* 2 panels behind is not real panels */
+/* 2 panels behind are not real panels */
 #panel_pick {}
 #panel_upload {}
 
@@ -54,13 +54,10 @@ body {
 <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.4.5/jquery.mobile.theme-1.4.5.css">
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
 <script src="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-<script src="lib/fabric.js"></script>
+<script src="lib/exif.js"></script>
+<script src="lib/fabric.min.js"></script>
 <script src="lib/Blob.js"></script>
-<!-- Blob.js implements the W3C Blob interface in browsers that do not natively support it.
-	 https://github.com/eligrey/Blob.js -->
 <script src="lib/canvas-toBlob.js"></script>
-<!-- canvas-toBlob.js implements the standard HTML5 canvas.toBlob() and canvas.toBlobHD() methods in browsers that do not natively support it.
-	 https://github.com/eligrey/canvas-toBlob.js -->
 </head>
 
 <body>
@@ -91,7 +88,8 @@ body {
 	</div>
 
 	<div role="main" class="ui-content">
-		<div>
+		<div class="aligncenter">
+			<pre id="res"></pre>
 			<img id="result"></img>
 			
 			<div id="wrap">
@@ -121,13 +119,10 @@ if ($handle = opendir('frame')) {
 			편집 완료
 		</div>
 		<ul data-role="listview" data-inset="true">
-			<li data-role="list-divider">사진 정보 입력</li>
+			<li data-role="list-divider">사진 제목 입력</li>
 			<li>
 				<div class="ui-grid-a">
-					<div class="ui-block-6">
-						<label for="frm_title"><p><strong>사진 제목</strong></p></label>
-					</div>
-					<div class="ui-block-4">
+					<div class="ui-block">
 						<input type="text" name="title" id="frm_title" value="" placeholder="사진 제목"/>
 					</div>
 				</div>
@@ -135,34 +130,34 @@ if ($handle = opendir('frame')) {
 			<li data-role="list-divider">개인정보의 수집&middot;이용 동의</li>
 			<li>
 				<div class="ui-grid-a">
-					<div class="ui-block-6">
-						<p class="alignleft"><strong>개인정보의 수집&middot;이용 목적</strong></p>
+					<div class="ui-block-a">
+						<p class="alignleft"><strong>수집&middot;이용 목적</strong></p>
 					</div>
-					<div class="ui-block-4">
-						<p class="alignright">사진 인화</p>
-					</div>
-				</div>
-
-				<div class="ui-grid-a">
-					<div class="ui-block-6">
-						<p class="alignleft"><strong>수집하는 개인정보의 항목</strong></p>
-					</div>
-					<div class="ui-block-4">
-						<p class="alignright">사진</p>
+					<div class="ui-block-b">
+						<p class="alignleft">사진 인화</p>
 					</div>
 				</div>
 
 				<div class="ui-grid-a">
-					<div class="ui-block-6">
-						<p class="alignleft"><strong>개인정보의 보유 및 이용 기간</strong></p>
+					<div class="ui-block-a">
+						<p class="alignleft"><strong>수집 항목</strong></p>
 					</div>
-					<div class="ui-block-4">
-						<p class="alignright">1일</p>
+					<div class="ui-block-b">
+						<p class="alignleft">사진</p>
+					</div>
+				</div>
+
+				<div class="ui-grid-a">
+					<div class="ui-block-a">
+						<p class="alignleft"><strong>보유 기간</strong></p>
+					</div>
+					<div class="ui-block-b">
+						<p class="alignleft">1일</p>
 					</div>
 				</div>
 				<p class="aligncenter" style="white-space:normal">
 					<strong>동의를 거부</strong>하실 수 있으며, 미동의 시
-					사진 <strong>편집 및 출력이 불가능</strong>합니다.</p>
+					사진 <strong>출력은 불가능</strong>합니다.</p>
 				<div class="aligncenter">
 				<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
 					<legend class="ui-hidden-accessible">개인정보 수집&middot;이용 동의</legend>
@@ -182,51 +177,31 @@ if ($handle = opendir('frame')) {
 <script type="text/javascript">
 var PIC_OBJ
 var PRESET
+var BG_URL = 'pictures/background.png'
+var DEVICE_PIXEL_RATIO = window.devicePixelRatio
 
 // Canvas size preset
-// 4 * 6 inch w/ 300dpi -> 1200*1800
 var _PRESET = {
 	HORIZONTAL : {
-	FRAME_WIDTH : 2112,
-	FRAME_HEIGHT : 1408,
-	PIC_WIDTH : 2112 * 0.8,
-	PIC_HEIGHT : 1408 * 0.8,
-	PIC_PADDING_LEFT : 60,
-	PIC_PADDING_TOP : 120,
-	SCALE : 1,
-	},
+		FRAME_WIDTH : 1800,
+		FRAME_HEIGHT : 1200,
+		PIC_WIDTH : 1800 * 0.8,
+		PIC_HEIGHT : 1200 * 0.8,
+		PIC_PADDING_LEFT : 60,
+		PIC_PADDING_TOP : 120,
+		SCALE : 1,
+		},
 	VERTICAL : {
-	FRAME_WIDTH : 1408,
-	FRAME_HEIGHT : 2112,
-	PIC_WIDTH : 1408,
-	PIC_HEIGHT : 2112,
-	PIC_PADDING_LEFT : 0,
-	PIC_PADDING_TOP : 500,
-	SCALE : 1,
+		FRAME_WIDTH : 1200,
+		FRAME_HEIGHT : 1800,
+		PIC_WIDTH : 1200,
+		PIC_HEIGHT : 1800,
+		PIC_PADDING_LEFT : 0,
+		PIC_PADDING_TOP : 500,
+		SCALE : 1,
 	}
 }
-/*
-var _PRESET = {
-	HORIZONTAL : {
-	FRAME_WIDTH : 1800,
-	FRAME_HEIGHT : 1200,
-	PIC_WIDTH : 1800 * 0.8,
-	PIC_HEIGHT : 1200 * 0.8,
-	PIC_PADDING_LEFT : 60,
-	PIC_PADDING_TOP : 120,
-	SCALE : 1,
-	},
-	VERTICAL : {
-	FRAME_WIDTH : 1200,
-	FRAME_HEIGHT : 1800,
-	PIC_WIDTH : 1200,
-	PIC_HEIGHT : 1800,
-	PIC_PADDING_LEFT : 0,
-	PIC_PADDING_TOP : 500,
-	SCALE : 1,
-	}
-}
-*/
+
 var canvas = new fabric.Canvas('c', {
 	backgroundColor: '#fff',
 	selectionColor:'black',
@@ -248,6 +223,13 @@ $(document).ready(function() {
 	// Set first frame
 	$('.thumbnail').first().css('border-color', 'blue')
 	canvas.setOverlayImage($('.thumbnail').first().attr('src'), canvas.renderAll.bind(canvas))
+	// Set background
+	fabric.Image.fromURL(BG_URL, function(oImg) {
+		oImg.scaleToWidth(PRESET["PIC_WIDTH"])
+		oImg.selectable = false
+		canvas.add(oImg)
+		oImg.sendToBack()
+	})
 
 	$('#btn_submit').button('disable')
 })
@@ -266,21 +248,31 @@ $('#pick_picture').change(function(e) {
 	if (!file.type.match(imageType)) return
 	var reader = new FileReader()
 	reader.onload = function(event) {
+		var exif = EXIF.readFromBinaryFile(base64ToArrayBuffer(this.result))
 		var imageObj = new Image()
 		imageObj.src = event.target.result
 		imageObj.onload = function() {
 			var oImg = new fabric.Image(imageObj)
 			if (PIC_OBJ) canvas.remove(PIC_OBJ)
 			oImg.scaleToWidth(PRESET["PIC_WIDTH"])
-				.setLeft(PRESET["PIC_PADDING_LEFT"])
-				.setTop(PRESET["PIC_PADDING_TOP"])
 			oImg.set({
 				left: canvas.width / 2 / PRESET["SCALE"],
 				top: canvas.height / 2 / PRESET["SCALE"],
 				originX:"center",
 				originY:"center"
 			})
+			switch(exif.Orientation) {
+				case 8:
+					oImg.setAngle(270)
+					break
+				case 6:
+					oImg.setAngle(90)
+					break
+				case 3:
+					oImg.setAngle(180)
+			}
 			canvas.add(oImg)
+			oImg.bringToFront()
 			PIC_OBJ = oImg
 		}
 	}
@@ -292,7 +284,21 @@ $('#pick_picture').change(function(e) {
 
 $('input[name=title]').change(checkSubmit)
 $('input[name=title]').keyup(checkSubmit)
-$('input[name=privacy_yn]').change(checkSubmit)
+$('input[name=privacy_yn]').change(function() {
+	$('input[name=privacy_yn]').focus()
+	checkSubmit()
+})
+
+function base64ToArrayBuffer (base64) {
+	base64 = base64.replace(/^data\:([^\;]+)\;base64,/gmi, '');
+	var binaryString = atob(base64);
+	var len = binaryString.length;
+	var bytes = new Uint8Array(len);
+	for (var i = 0; i < len; i++) {
+		bytes[i] = binaryString.charCodeAt(i);
+	}
+	return bytes.buffer;
+}
 
 function checkSubmit() {
 	if ($('input[name=privacy_yn]:checked').val() == "Y" && $('input[name=title]').val() != "") {
@@ -304,21 +310,26 @@ function checkSubmit() {
 }
 
 $('#btn_submit').click(function() {
-	var picture_name = getDateTime() + "_" + $('input[name=title]').val() + ".jpg"
-	// Restore canvas size
-	canvas
-	.deactivateAll()
-	.setZoom(1)
-	.setWidth(PRESET["FRAME_WIDTH"])
-	.setHeight(PRESET["FRAME_HEIGHT"])
-	.renderAll()
-
 	// $('canvas').hide() // After .hide() <canvas> still takes space
 	$('#wrap').hide()
 	$('#result').show()
 	$('#navbarBtn').hide()
 	$('#panel_pick').hide()
 	$('#panel_upload').show()
+	window.setTimeout(toBlobAndSave, 500)
+})
+
+function toBlobAndSave() {
+	var picture_name = getDateTime() + "_" + $('input[name=title]').val() + ".jpg"
+	// Restore canvas size
+	// Take some saconds in mobile
+	canvas
+	.deactivateAll()
+	.setZoom(1 / DEVICE_PIXEL_RATIO)
+	.setWidth(PRESET["FRAME_WIDTH"] / DEVICE_PIXEL_RATIO)
+	.setHeight(PRESET["FRAME_HEIGHT"] / DEVICE_PIXEL_RATIO)
+	.renderAll()
+
 	$('canvas')[0].toBlob(function(blob) {
 		var fd = new FormData()
 		fd.append("framedpicture", blob, picture_name)
@@ -338,33 +349,46 @@ $('#btn_submit').click(function() {
 			cache: false,
 			processData: false,
 			contentType: false,
-			beforeSend: function() {
-				console.log("@beforeSend")
-			},
+			beforeSend: null,
 			success: function(response, status, jqXHR) {
-				$('#result')
-					.width(PRESET["SCALE"] * PRESET["FRAME_WIDTH"])
-					.height(PRESET["SCALE"] * PRESET["FRAME_HEIGHT"])
-					.prop('src', "get.php?type=f&name="+response)
+				onSaveSuccess(blob)
 			},
-			error: function(jqXHR, status, errorThrown) {
-				alert("Error\n"+status+errorThrown)
-			}
+			error: onSaveError
 		})
 	}, "image/jpeg", 0.9)
-})
+}
+
+function onSaveSuccess(blobObj) {
+	var urlCreator = window.URL || window.webkitURL
+	$('#result')
+		.width(PRESET["SCALE"] * PRESET["FRAME_WIDTH"])
+		.height(PRESET["SCALE"] * PRESET["FRAME_HEIGHT"])
+		.prop('src', urlCreator.createObjectURL(blobObj))
+	$('#panel_upload').hide()
+	alert("안 내 문 구")
+}
+
+function onSaveError(jqXHR, status, errorThrown) {
+	alert("오 류 안 내")
+}
 
 $('#btn_pick').click(function () {
 	$('#panel_pick').toggle()
 })
 
 $('#btn_zoomin').click(function() {
-	PIC_OBJ.scale(PIC_OBJ.getScaleX() * 1.05)
-	canvas.renderAll()
+	if(PIC_OBJ) {
+		PIC_OBJ.scale(PIC_OBJ.getScaleX() * 1.05)
+		canvas.renderAll()
+	}
+	window.setTimeout(function() { $('#btn_zoomin').removeClass($.mobile.activeBtnClass) }, 150)
 })
 $('#btn_zoomout').click(function() {
-	PIC_OBJ.scale(PIC_OBJ.getScaleX() / 1.05)
-	canvas.renderAll()
+	if(PIC_OBJ) {
+		PIC_OBJ.scale(PIC_OBJ.getScaleX() / 1.05)
+		canvas.renderAll()
+	}
+	window.setTimeout(function() { $('#btn_zoomout').removeClass($.mobile.activeBtnClass) }, 150)
 })
 
 function setScale() {
@@ -382,13 +406,13 @@ function getDateTime() {
 	result = now.getFullYear() + fillZero(now.getMonth()+1) + fillZero(now.getDate()) + '_'
 	result += fillZero(now.getHours()) + fillZero(now.getMinutes()) + fillZero(now.getSeconds())
 	return result
+	function fillZero(str) {
+		str = '0' + str
+		if (str.length > 2) str = str.slice(str.length - 2)
+		return str
+	}
 }
 
-function fillZero(str) {
-	str = '0' + str
-	if (str.length > 2) str = str.slice(str.length - 2)
-	return str
-}
 </script>
 </body>
 </html>
