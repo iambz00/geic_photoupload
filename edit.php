@@ -392,7 +392,11 @@ function onSaveError(jqXHR, status, errorThrown) {
 }
 
 $('#btn_pick').click(function () {
-	$('#panel_pick').toggle()
+	$('#panel_pick').toggle(function() {
+		if (!$(this).is(':visible')) {
+			$('#btn_pick').removeClass($.mobile.activeBtnClass)
+		}
+	})
 })
 
 $('#btn_zoomin').click(function() {
