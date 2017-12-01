@@ -68,7 +68,7 @@ body {
 				<li><a href="#panel_frame" data-icon="grid">액자 선택</a></li>
 				<li><a id="btn_zoomin" data-icon="plus">사진 확대</a></li>
 				<li><a id="btn_zoomout" data-icon="minus">사진 축소</a></li>
-				<li><a href="#popup_upload" data-rel="popup" data-position-to="window" data-transition="slide" data-icon="action">편집 완료</a></li>
+				<li><a href="#popup_upload" data-rel="popup" data-position-to="window" data-transition="fade" data-icon="action">편집 완료</a></li>
 			</ul>
 			<div id="panel_pick">
 				<p class="aligncenter">사진을 선택해 주세요.</p>
@@ -193,7 +193,7 @@ if ($handle = opendir('frame')) {
 			</div>
 		</div>
 	</div>
-	<div id="layer" style="position:absolute; width:100%; height:100%; left:0; top:0; background-color:rgba(0,0,0,0.5); display:none"></div>
+	<div id="bg_popup" style="position:absolute; width:100%; height:100%; left:0; top:0; background-color:rgba(0,0,0,0.5); display:none"></div>
 </div>
 
 <script type="text/javascript">
@@ -415,6 +415,13 @@ $('#btn_zoomout').click(function() {
 	}
 	window.setTimeout(function() { $('#btn_zoomout').removeClass($.mobile.activeBtnClass) }, 150)
 })
+$('div[data-role=popup]')
+	.on('popupbeforeposition', function() {
+		$('#bg_popup').show()
+	})
+	.on('popupafterclose', function() {
+		$('#bg_popup').hide()
+	})
 
 function setScale() {
 	var windowPadding = window.innerWidth - document.body.clientWidth
