@@ -68,7 +68,7 @@ body {
 				<li><a href="#panel_frame" data-icon="grid">액자 선택</a></li>
 				<li><a id="btn_zoomin" data-icon="plus">사진 확대</a></li>
 				<li><a id="btn_zoomout" data-icon="minus">사진 축소</a></li>
-				<li><a href="#panel_finish" data-icon="action">편집 완료</a></li>
+				<li><a href="#popup_upload" data-rel="popup" data-position-to="window" data-transition="slide" data-icon="action">편집 완료</a></li>
 			</ul>
 			<div id="panel_pick">
 				<p class="aligncenter">사진을 선택해 주세요.</p>
@@ -110,9 +110,10 @@ if ($handle = opendir('frame')) {
 }
 ?>
 	</div>
-	<div data-role="panel" data-display="overlay" id="panel_finish" data-position="right">
-		<div class="ui-bar ui-bar-a">
-			편집 완료
+	<div data-role="popup" id="popup_upload" class="ui-content" data-dismissible="false">
+		<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+		<div class="ui-bar ui-bar-a aligncenter">
+			편집 완료 및 전송
 		</div>
 		<ul data-role="listview" data-inset="true">
 			<li data-role="list-divider">사진 제목 입력</li>
@@ -192,6 +193,7 @@ if ($handle = opendir('frame')) {
 			</div>
 		</div>
 	</div>
+	<div id="layer" style="position:absolute; width:100%; height:100%; left:0; top:0; background-color:rgba(0,0,0,0.5); display:none"></div>
 </div>
 
 <script type="text/javascript">
