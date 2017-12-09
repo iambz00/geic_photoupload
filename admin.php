@@ -39,8 +39,8 @@ if ($handle = opendir('./pictures/thumbnail')) {
             $date = date_create_from_format('Ymd_His', $matches[1]);
     ?>
     <li>
-        <a href="get.php?type=f&name=<?=$entry?>">
-            <img src="get.php?type=t&name=<?=$entry?>" alt=""><br>
+        <a href="get.php?type=f&name=<?=urlencode($entry)?>">
+            <img src="get.php?type=t&name=<?=urlencode($entry)?>" alt=""><br>
             <?=$date->format('m-d H:i:s');?><br>
             <?=$matches[2]?>
         </a>

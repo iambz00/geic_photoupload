@@ -24,8 +24,8 @@ body {
 
 .thumbnail {
 	margin:10px;
-	width:90px;
-	height:135px;
+	max-width:90px;
+	height:auto;
 	border:2px solid #ccc;
 	vertical-align:middle;
 }
@@ -231,27 +231,23 @@ var canvas = new fabric.Canvas('c', {
 
 // Callbacks & Handlers
 $(document).ready(function() {
-	PRESET = _PRESET["VERTICAL"]
-	setScale()
-
-	canvas.setZoom(PRESET["SCALE"])
-	canvas.setWidth(PRESET["SCALE"] * PRESET["FRAME_WIDTH"])
-	canvas.setHeight(PRESET["SCALE"] * PRESET["FRAME_HEIGHT"])
-
+	setCanvas("VERTICAL")
 	$('#result').hide()
 	$('#panel_upload').hide()
 	$('#notice').hide()
 
 	// Set first frame
-	$('.thumbnail').first().css('border-color', 'blue')
-	canvas.setOverlayImage($('.thumbnail').first().attr('src'), canvas.renderAll.bind(canvas))
+	$('.thumbnail').first().click()
+
 	// Set background
+	/*
 	fabric.Image.fromURL(BG_URL, function(oImg) {
 		oImg.scaleToWidth(PRESET["PIC_WIDTH"])
 		oImg.selectable = false
 		canvas.add(oImg)
 		oImg.sendToBack()
 	})
+	*/
 
 	$('#btn_submit').button('disable')
 })
@@ -262,6 +258,12 @@ $('.thumbnail').each(function() {
 		$('.thumbnail').each(function() { $(this).css('border-color', '#ccc') })
 		$(this).css('border-color', 'blue')
 		canvas.setOverlayImage($(this).attr('src'), canvas.renderAll.bind(canvas))
+		if(parseInt($(this).css('width')) > parseInt($(this).css('height'))) {
+			setCanvas("HORIZONTAL")
+		}
+		else {
+			setCanvas("VERTICAL")
+		}
 	})
 })
 
@@ -423,6 +425,15 @@ $('div[data-role=popup]')
 	.on('popupafterclose', function() {
 		$('#bg_popup').hide()
 	})
+
+function setCanvas(rotation) {
+	PRESET = _PRESET[rotation]	// "HORIZONTAL" or "VERTICAL"
+	setScale()
+
+	canvas.setZoom(PRESET["SCALE"])
+	canvas.setWidth(PRESET["SCALE"] * PRESET["FRAME_WIDTH"])
+	canvas.setHeight(PRESET["SCALE"] * PRESET["FRAME_HEIGHT"])
+}
 
 function setScale() {
 	var windowPadding = window.innerWidth - document.body.clientWidth
