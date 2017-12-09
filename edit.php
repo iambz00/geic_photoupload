@@ -100,13 +100,10 @@ body {
 			액자 선택
 		</div>
 <?php
-if ($handle = opendir('frame')) {
-	while(false !== ($file = readdir($handle))) {
-		if ($file == '.' || $file == '..') continue;
+foreach(glob("frame/*.png") as $filepath) {
 ?>
-		<img src='frame/<?=$file?>' class="thumbnail" data-rel="close"/>
+		<img src='<?=$filepath?>' class="thumbnail" data-rel="close"/>
 <?php
-	}
 }
 ?>
 	</div>
