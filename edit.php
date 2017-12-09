@@ -51,7 +51,6 @@ body {
 <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.4.5/jquery.mobile.theme-1.4.5.css">
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
 <script src="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-<script src="lib/exif.js"></script>
 <script src="lib/fabric.min.js"></script>
 <script src="lib/Blob.js"></script>
 <script src="lib/canvas-toBlob.js"></script>
@@ -66,8 +65,10 @@ body {
 			<ul id="navbarBtn">
 				<li><a id="btn_pick" data-icon="camera">사진 선택</a></li>
 				<li><a href="#panel_frame" data-icon="grid">액자 선택</a></li>
-				<li><a id="btn_zoomin" data-icon="plus">사진 확대</a></li>
-				<li><a id="btn_zoomout" data-icon="minus">사진 축소</a></li>
+				<li><a href="#popup_zoom" data-rel="popup" data-icon="plus">확대/축소</a></li>
+				<li><a href="#popup_rotate" data-rel="popup" data-icon="recycle">사진 회전</a></li>
+				<!--li><a id="btn_zoomin" data-icon="plus">확대/축소</a></li>
+				<li><a id="btn_zoomout" data-icon="recycle">사진 회전</a></li-->
 				<li><a href="#popup_upload" data-rel="popup" data-position-to="window" data-transition="fade" data-icon="action">편집 완료</a></li>
 			</ul>
 			<div id="panel_pick">
@@ -106,6 +107,24 @@ foreach(glob("frame/*.png") as $filepath) {
 <?php
 }
 ?>
+	</div>
+	<div data-role="popup" id="popup_zoom">
+		<div class="ui-btn ui-input-btn ui-btn-inline ui-icon-plus ui-btn-icon-top" style="margin:0">
+			확대(5%)
+			<input type="button" id="btn_zoomin" data-enhanced="true" value="zoomin">
+		</div><div class="ui-btn ui-input-btn ui-btn-inline ui-icon-minus ui-btn-icon-top" style="margin:0">
+			축소(5%)
+			<input type="button" id="btn_zoomout" data-enhanced="true" value="zoomin">
+		</div>
+	</div>
+	<div data-role="popup" id="popup_rotate">
+		<div class="ui-btn ui-input-btn ui-btn-inline ui-icon-forward ui-btn-icon-top" style="margin:0">
+			시계방향<br>90&deg; 회전
+			<input type="button" id="btn_rotatecw" data-enhanced="true" value="zoomin">
+		</div><div class="ui-btn ui-input-btn ui-btn-inline ui-icon-back ui-btn-icon-top" style="margin:0">
+			반시계방향<br>90&deg; 회전
+			<input type="button" id="btn_rotateccw" data-enhanced="true" value="zoomin">
+		</div>
 	</div>
 	<div data-role="popup" id="popup_upload" class="ui-content" data-dismissible="false">
 		<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
@@ -206,8 +225,6 @@ var _PRESET = {
 		FRAME_HEIGHT : 1200,
 		PIC_WIDTH : 1800 * 0.8,
 		PIC_HEIGHT : 1200 * 0.8,
-		PIC_PADDING_LEFT : 60,
-		PIC_PADDING_TOP : 120,
 		SCALE : 1,
 		},
 	VERTICAL : {
@@ -215,8 +232,6 @@ var _PRESET = {
 		FRAME_HEIGHT : 1800,
 		PIC_WIDTH : 1200,
 		PIC_HEIGHT : 1800,
-		PIC_PADDING_LEFT : 0,
-		PIC_PADDING_TOP : 500,
 		SCALE : 1,
 	}
 }
@@ -236,16 +251,6 @@ $(document).ready(function() {
 	// Set first frame
 	$('.thumbnail').first().click()
 
-	// Set background
-	/*
-	fabric.Image.fromURL(BG_URL, function(oImg) {
-		oImg.scaleToWidth(PRESET["PIC_WIDTH"])
-		oImg.selectable = false
-		canvas.add(oImg)
-		oImg.sendToBack()
-	})
-	*/
-
 	$('#btn_submit').button('disable')
 })
 
@@ -254,12 +259,11 @@ $('.thumbnail').each(function() {
 		// Reset border color
 		$('.thumbnail').each(function() { $(this).css('border-color', '#ccc') })
 		$(this).css('border-color', 'blue')
-		canvas.setOverlayImage($(this).attr('src'), canvas.renderAll.bind(canvas))
 		if(parseInt($(this).css('width')) > parseInt($(this).css('height'))) {
-			setCanvas("HORIZONTAL")
+			canvas.setOverlayImage($(this).attr('src'), canvas.renderAll.bind(canvas), { angle:90, left:PRESET["FRAME_WIDTH"] })
 		}
 		else {
-			setCanvas("VERTICAL")
+			canvas.setOverlayImage($(this).attr('src'), canvas.renderAll.bind(canvas))
 		}
 	})
 })
@@ -269,7 +273,6 @@ $('#pick_picture').change(function(e) {
 	if (!file.type.match(imageType)) return
 	var reader = new FileReader()
 	reader.onload = function(event) {
-		var exif = EXIF.readFromBinaryFile(base64ToArrayBuffer(this.result))
 		var imageObj = new Image()
 		imageObj.src = event.target.result
 		imageObj.onload = function() {
@@ -282,16 +285,6 @@ $('#pick_picture').change(function(e) {
 				originX:"center",
 				originY:"center"
 			})
-			switch(exif.Orientation) {
-				case 8:
-					oImg.setAngle(270)
-					break
-				case 6:
-					oImg.setAngle(90)
-					break
-				case 3:
-					oImg.setAngle(180)
-			}
 			canvas.add(oImg)
 			oImg.bringToFront()
 			PIC_OBJ = oImg
@@ -309,17 +302,6 @@ $('input[name=privacy_yn]').change(function() {
 	$('input[name=privacy_yn]').focus()
 	checkSubmit()
 })
-
-function base64ToArrayBuffer (base64) {
-	base64 = base64.replace(/^data\:([^\;]+)\;base64,/gmi, '');
-	var binaryString = atob(base64);
-	var len = binaryString.length;
-	var bytes = new Uint8Array(len);
-	for (var i = 0; i < len; i++) {
-		bytes[i] = binaryString.charCodeAt(i);
-	}
-	return bytes.buffer;
-}
 
 function checkSubmit() {
 	if ($('input[name=privacy_yn]:checked').val() == "Y" && $('input[name=title]').val() != "") {
@@ -406,14 +388,24 @@ $('#btn_zoomin').click(function() {
 		PIC_OBJ.scale(PIC_OBJ.getScaleX() * 1.05)
 		canvas.renderAll()
 	}
-	window.setTimeout(function() { $('#btn_zoomin').removeClass($.mobile.activeBtnClass) }, 150)
 })
 $('#btn_zoomout').click(function() {
 	if(PIC_OBJ) {
 		PIC_OBJ.scale(PIC_OBJ.getScaleX() / 1.05)
 		canvas.renderAll()
 	}
-	window.setTimeout(function() { $('#btn_zoomout').removeClass($.mobile.activeBtnClass) }, 150)
+})
+$('#btn_rotatecw').click(function() {
+	if(PIC_OBJ) {
+		PIC_OBJ.angle += 90
+		canvas.renderAll()
+	}
+})
+$('#btn_rotateccw').click(function() {
+	if(PIC_OBJ) {
+		PIC_OBJ.angle -= 90
+		canvas.renderAll()
+	}
 })
 $('div[data-role=popup]')
 	.on('popupbeforeposition', function() {
