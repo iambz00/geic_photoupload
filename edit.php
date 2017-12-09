@@ -166,7 +166,7 @@ if ($handle = opendir('frame')) {
 				</div>
 			</li>
 		</ul>
-		<input type="button" id="btn_submit" data-icon="edit" value="사진 전송" data-rel="close"/>
+		<input type="button" id="btn_submit" data-icon="edit" value="사진 전송" data-rel="back"/>
 
 	</div>
 	<div data-role="popup" id="popup_finish" data-dismissible="false">	
@@ -338,6 +338,7 @@ $('#btn_submit').click(function() {
 	$('#navbarBtn').hide()
 	$('#panel_pick').hide()
 	$('#panel_upload').show()
+	$('#popup_upload').popup("close")
 	window.setTimeout(toBlobAndSave, 500)
 })
 
