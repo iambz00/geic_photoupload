@@ -4,7 +4,7 @@ if ($_SERVER['REQUEST METHOD'] === 'POST') die("BAD REQEUST");
 $type = $_REQUEST['type'];
 $name = stripslashes(strip_tags($_REQUEST['name']));
 $filename = "";
-
+$name = preg_replace("/^.*\//", "", $name);
 if (preg_match("/\/|\\\\/", $name) > 0) {
     $filename = "pictures/badrequest.jpg";
 } else {

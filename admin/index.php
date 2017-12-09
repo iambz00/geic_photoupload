@@ -27,28 +27,23 @@ a	{
 
 <body>
 
-</body>
-
-</html><ul>
+<ul>
 <?php
-
-if ($handle = opendir('./pictures/thumbnail')) {
-    while (false !== ($entry = readdir($handle))) {
-        if (substr($entry,-4) == ".jpg") { // .jpg only
-            preg_match("/([\d_]{15})_(.*)\.jpg/", $entry, $matches);
-            $date = date_create_from_format('Ymd_His', $matches[1]);
+foreach(glob("../pictures/thumbnail/*.jpg") as $entry) {
+	$entry = preg_replace("/^.*\//", "", $entry);	// strip out directory tree
+	preg_match("/([\d_]{15})_(.*)\.jpg/", $entry, $matches);
+	$date = date_create_from_format('Ymd_His', $matches[1]);
     ?>
     <li>
-        <a href="get.php?type=f&name=<?=urlencode($entry)?>">
-            <img src="get.php?type=t&name=<?=urlencode($entry)?>" alt=""><br>
+        <a href="../get.php?type=f&name=<?=urlencode($entry)?>">
+            <img src="../get.php?type=t&name=<?=urlencode($entry)?>" alt=""><br>
             <?=$date->format('m-d H:i:s');?><br>
             <?=$matches[2]?>
         </a>
     </li>
     <?php
-        }
-    }
-    closedir($handle);
 }
 ?>
 </ul>
+</body>
+</html>
