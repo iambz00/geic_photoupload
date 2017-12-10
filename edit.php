@@ -48,7 +48,6 @@ body {
 </style>
 
 <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.4.5/jquery.mobile-1.4.5.min.css">
-<link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.4.5/jquery.mobile.theme-1.4.5.css">
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
 <script src="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 <script src="lib/fabric.min.js"></script>
@@ -63,12 +62,10 @@ body {
 		<h1>사진 편집</h1>
 		<div data-role="navbar">
 			<ul id="navbarBtn">
-				<li><a id="btn_pick" data-icon="camera">사진 선택</a></li>
+				<li><a id="btn_pick" data-icon="camera" class="ui-btn-active">사진 선택</a></li>
 				<li><a href="#panel_frame" data-icon="grid">액자 선택</a></li>
 				<li><a href="#popup_zoom" data-rel="popup" data-icon="plus">확대/축소</a></li>
 				<li><a href="#popup_rotate" data-rel="popup" data-icon="recycle">사진 회전</a></li>
-				<!--li><a id="btn_zoomin" data-icon="plus">확대/축소</a></li>
-				<li><a id="btn_zoomout" data-icon="recycle">사진 회전</a></li-->
 				<li><a href="#popup_upload" data-rel="popup" data-position-to="window" data-transition="fade" data-icon="action">편집 완료</a></li>
 			</ul>
 			<div id="panel_pick">
@@ -114,7 +111,7 @@ foreach(glob("frame/*.png") as $filepath) {
 			<input type="button" id="btn_zoomin" data-enhanced="true" value="zoomin">
 		</div><div class="ui-btn ui-input-btn ui-btn-inline ui-icon-minus ui-btn-icon-top" style="margin:0">
 			축소(5%)
-			<input type="button" id="btn_zoomout" data-enhanced="true" value="zoomin">
+			<input type="button" id="btn_zoomout" data-enhanced="true" value="zoomout">
 		</div>
 	</div>
 	<div data-role="popup" id="popup_rotate">
