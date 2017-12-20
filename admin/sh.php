@@ -8,8 +8,6 @@ case "pic":
 		// No slash allowed
 		if(preg_match("/[\/\`\'\"\>\<]/", $file)) die("BAD REQUEST");
 
-	//	echo(`ls -Z "../pictures/framed/$file"`);
-	//	echo(`ls -Z "../pictures/thumbnail/$file"`);
 		echo(`rm -vf "../pictures/framed/$file"`);
 		echo(`rm -vf "../pictures/thumbnail/$file"`);
 	}
@@ -19,7 +17,6 @@ case "frame":
 		// No slash allowed
 		if(preg_match("/\/\`\'\"\>\</", $file)) die("BAD REQUEST");
 	
-	//	echo(`ls -Z "../frame/$file"`);
 		echo(`rm -vf "../frame/$file"`);
 	}
 	break;

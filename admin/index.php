@@ -34,6 +34,19 @@ a	{
 .picinfo {
 	font-size:10pt
 }
+#popup_result {
+	min-width:200px;
+	min-height:300px;
+	background-color:#000;
+}
+#bg_popup {
+	position:absolute;
+	width:100%;
+	height:100%;
+	left:0; top:0;
+	background-color:rgba(0,0,0,0.5);
+	display:none;
+}
 </style>
 <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.4.5/jquery.mobile-1.4.5.min.css">
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
@@ -47,8 +60,8 @@ a	{
 <div data-role="tabs" id="tab_header">
 	<div data-role="navbar">
 		<ul>
-			<li><a href="#tab_list" data-ajax="false" class="ui-btn-active">업로드 사진 관리</a></li>
-			<li><a href="#tab_frame" data-ajax="false">액자 관리</a></li>
+			<li><a id="btn_list" href="#tab_list" class="ui-btn-active" data-ajax="false">업로드 사진 관리</a></li>
+			<li><a id="btn_frame" href="#tab_frame" data-ajax="false">액자 관리</a></li>
 		</ul>
 	</div>
 
@@ -96,7 +109,7 @@ foreach(glob("../pictures/thumbnail/*.jpg") as $filepath) {
 		</div>
 		<form enctype="multipart/form-data" method="POST" onsubmit="return false">
 			<input type="file" name="userfile" id="frm_file" accept="image/png"/>
-			<button id="btn_uploadframe" class="ui-btn ui-icon-forbidden ui-btn-icon-left">액자 업로드</button>
+			<button id="btn_uploadframe" class="ui-btn ui-icon-action ui-btn-icon-left">액자 업로드</button>
 		</form>
 
 		<ul>
@@ -123,6 +136,8 @@ foreach(glob("../frame/*.png") as $filepath) {
 	<pre id="result" style="color:#eee; background-color:#000; text-shadow:0 0 0;">
 	</pre>
 </div>
+<div id="bg_popup"></div>
+
 <script type="text/javascript">
 $('#btn_rmpic').click(function() {
 	if(confirm("선택한 사진을 정말로 삭제할까요?")) {
@@ -202,7 +217,7 @@ $('#btn_uploadframe').click(function() {
 	var fd = new FormData()
 	fd.append('userfile', file)
 	$.ajax({
-		url: "s.php",
+		url: "saveframe.php",
 		type: "POST",
 		cache: false,
 		processData: false,
@@ -218,7 +233,10 @@ function report(text) {
 	$('#popup_result').popup("open")
 }
 $('#popup_result').on('popupafterclose', function() {
-	location.reload(true)
+	$('#bg_popup').hide()
+	location.reload()
+}).on('popupbeforeposition', function() {
+	$('#bg_popup').show()
 })
 </script>
 </body>
