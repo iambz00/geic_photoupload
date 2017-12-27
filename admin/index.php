@@ -60,12 +60,12 @@ a	{
 <div data-role="tabs" id="tab_header">
 	<div data-role="navbar">
 		<ul>
-			<li><a id="btn_list" href="#tab_list" class="ui-btn-active" data-ajax="false">업로드 사진 관리</a></li>
-			<li><a id="btn_frame" href="#tab_frame" data-ajax="false">액자 관리</a></li>
+			<li><a id="btn_list">업로드 사진 관리</a></li>
+			<li><a id="btn_frame">액자 관리</a></li>
 		</ul>
 	</div>
 
-	<div id="tab_list">
+	<div id="tab_list" class="hidden">
 		<div class="ui-field-contain">
 			<fieldset data-role="controlgroup" data-type="horizontal">
 				<legend class="aligncenter">관리 기능</legend>
@@ -99,7 +99,7 @@ foreach(glob("../pictures/thumbnail/*.jpg") as $filepath) {
 }
 ?>		</ul>
 	</div>
-	<div id="tab_frame">
+	<div id="tab_frame" class="hidden">
 		<div class="ui-field-contain">
 			<fieldset data-role="controlgroup" data-type="horizontal">
 				<legend class="aligncenter">관리 기능</legend>
@@ -139,6 +139,20 @@ foreach(glob("../frame/*.png") as $filepath) {
 <div id="bg_popup"></div>
 
 <script type="text/javascript">
+$(function() {
+	$('div.hidden').hide()
+	var page = '<?=$_REQUEST["p"]?>'
+	if (page != "2") {
+		$('#tab_list').show()
+		$('#btn_list').addClass('ui-btn-active')
+	} else {
+		$('#tab_frame').show()
+		$('#btn_frame').addClass('ui-btn-active')
+	}
+})
+$('#btn_list').click(function() { location.href='./' })
+$('#btn_frame').click(function() { location.href='./?p=2' })
+
 $('#btn_rmpic').click(function() {
 	if(confirm("선택한 사진을 정말로 삭제할까요?")) {
 		var arr_filename = []
